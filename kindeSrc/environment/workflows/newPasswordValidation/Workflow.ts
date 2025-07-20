@@ -19,9 +19,10 @@ export const workflowSettings: WorkflowSettings = {
 };
 
 
-function customValidatePassword(password: string) {
+function customPasswordValidator(password: string) {
   const hasUppercase = /[A-Z]/.test(password);
   const hasLowercase = /[a-z]/.test(password);
+  const hasNumber = /[0-9]/.test(password);
   const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
 
   if (!hasUppercase) {
@@ -30,18 +31,20 @@ function customValidatePassword(password: string) {
   if (!hasLowercase) {
     return "Password must include at least one lowercase letter.";
   }
+  if (!hasNumber) {
+    return "Password must include at least one number.";
+  }
   if (!hasSpecialChar) {
     return "Password must include at least one special character.";
   }
-
-  return undefined; // valid password
+  return null; // valid password
 }
 
 // The workflow code to be executed when the event is triggered
 export default async function Workflow(event: onNewPasswordProvidedEvent) {
   const password = event.context.auth.firstPassword
 
-  const invalidMessage = customValidatePassword(password)
+  const invalidMessage = customPasswordValidator(password)
 
   if (invalidMessage) {
     // Custom form validation
