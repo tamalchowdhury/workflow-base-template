@@ -18,15 +18,36 @@ export const workflowSettings: WorkflowSettings = {
   },
 };
 
+
+function customValidatePassword(password: string) {
+  const hasUppercase = /[A-Z]/.test(password);
+  const hasLowercase = /[a-z]/.test(password);
+  const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+  if (!hasUppercase) {
+    return "Password must include at least one uppercase letter.";
+  }
+  if (!hasLowercase) {
+    return "Password must include at least one lowercase letter.";
+  }
+  if (!hasSpecialChar) {
+    return "Password must include at least one special character.";
+  }
+
+  return undefined; // valid password
+}
+
 // The workflow code to be executed when the event is triggered
 export default async function Workflow(event: onNewPasswordProvidedEvent) {
-  const isMinCharacters = event.context.auth.firstPassword.length >= 50;
+  const password = event.context.auth.firstPassword
 
-  if (!isMinCharacters) {
+  const invalidMessage = customValidatePassword(password)
+
+  if (invalidMessage) {
     // Custom form validation
     invalidateFormField(
       "p_first_password",
-      "Your password must be at least 50 characters long"
+      invalidMessage
     );
   }
 }
