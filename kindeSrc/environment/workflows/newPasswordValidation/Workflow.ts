@@ -8,7 +8,7 @@ import {
 // The setting for this workflow
 export const workflowSettings: WorkflowSettings = {
   id: "onNewPasswordProvided",
-  name: "New Password Entered"
+  name: "New Password Entered",
   trigger: WorkflowTrigger.NewPasswordProvided,
   failurePolicy: {
     action: "stop",
